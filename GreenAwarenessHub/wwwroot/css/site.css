@@ -18,16 +18,5 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
-    background-color: rgb(184 228 184);
-}
-
-/* Styles for the footer */
-.footer {
-    color: black; /* Set footer text color to black */
-    background-color: lightblue; /* Set footer background color to blue */
-}
-
-.custom-navbar-bg {
-    background-color: lightblue;
+  margin-bottom: 60px;
 }

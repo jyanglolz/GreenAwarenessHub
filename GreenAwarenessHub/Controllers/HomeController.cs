@@ -15,7 +15,6 @@ namespace GreenAwarenessHub.Controllers
 
         public IActionResult Index()
         {
-            //hello world again
             return View();
         }
 
