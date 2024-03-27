@@ -15,6 +15,7 @@ namespace GreenAwarenessHub.Controllers
 
         public IActionResult Index()
         {
+            //hello world again
             return View();
         }
 
@@ -25,7 +26,7 @@ namespace GreenAwarenessHub.Controllers
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
-        {//hello world
+        {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
