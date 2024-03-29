@@ -4,7 +4,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\User;
 use App\Models\Order;
+use App\Models\Wallet;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\ShippingInfo;
@@ -74,34 +76,49 @@ class ClientController extends Controller
         $userid = Auth::id();
         $cart_items = Cart::where('user_id',$userid)->get();
         $shipping_address = ShippingInfo::where('user_id',$userid)->first();
-        return view('user_template.checkout',compact('cart_items','shipping_address'));
+        $walletBalance = User::findOrFail($userid)->wallet_balance; // Fetch the wallet balance
+        return view('user_template.checkout',compact('cart_items','shipping_address','walletBalance'));
+        
     }
 
-    public function PlaceOrder(){
-        $userid = Auth::id();
-        $shipping_address = ShippingInfo::where('user_id',$userid)->first();
-        $cart_items = Cart::where('user_id',$userid)->get();
+    public function PlaceOrder()
+    {
+        $userId = Auth::id();
+        $shippingAddress = ShippingInfo::where('user_id', $userId)->first();
+        $cartItems = Cart::where('user_id', $userId)->get();
 
-        foreach($cart_items as $item){
-            Order::insert([
-                'user_id'=>$userid,
-                'shipping_phoneNumber' => $shipping_address->phone_number,
-                'shipping_city' => $shipping_address->city_name,
-                'shipping_postalcode' => $shipping_address->postal_code,
-                'product_id' => $item->product_id,
-                'quantity' => $item->quantity,
-                'total_price' => $item->price,
+        // Calculate total cost of the order
+        $totalPrice = $cartItems->sum('price');
 
-            ]);
+        // Retrieve user instance
+        $user = User::findOrFail($userId);
 
-            $id = $item->id;
-            Cart::findOrFail($id)->delete();
+        // Check if the wallet balance is sufficient
+        if ($user->wallet_balance >= $totalPrice) {
+            foreach ($cartItems as $item) {
+                Order::insert([
+                    'user_id' => $userId,
+                    'shipping_phoneNumber' => $shippingAddress->phone_number,
+                    'shipping_city' => $shippingAddress->city_name,
+                    'shipping_postalcode' => $shippingAddress->postal_code,
+                    'product_id' => $item->product_id,
+                    'quantity' => $item->quantity,
+                    'total_price' => $item->price,
+                ]);
+
+                $item->delete(); // Remove the item from the cart
+            }
+
+            // Deduct the total cost from the user's wallet balance
+            $user->wallet_balance -= $totalPrice;
+            $user->save(); // Save the updated user instance
+
+            ShippingInfo::where('user_id', $userId)->first()->delete();
+
+            return redirect()->route('pendingorders')->with('message', 'Your Order Has Been Placed Successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Insufficient balance. Please top up your wallet before placing the order.');
         }
-
-        ShippingInfo::where('user_id',$userid)->first()->delete();
-
-        return redirect()->route('pendingorders')->with('message','Your Order Has Been Placed Successfully!');
-
     }
 
     public function UserProfile(){

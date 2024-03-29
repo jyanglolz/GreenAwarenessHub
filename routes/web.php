@@ -61,7 +61,9 @@ Route::middleware(['auth','role:user','verified','isVerified'])->group(function(
     Route::get('/remove-cart-item/{id}','RemoveCartItem')->name('removeitem');
     //wallet route
     Route::get('/wallet', [WalletController::class, 'show'])->name('wallet');
-    Route::post('/wallet/topup', [WalletController::class, 'topup'])->name('topup');
+    Route::get('/wallet/topup', [WalletController::class, 'showTopupForm'])->name('wallet.topup');
+    Route::post('/wallet/topup', [WalletController::class, 'topup'])->name('wallet.topup.post');
+
     });
 });
 

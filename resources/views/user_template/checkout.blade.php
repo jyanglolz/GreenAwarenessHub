@@ -1,6 +1,11 @@
 @extends('user_template.layouts.template')
 @section('main-content')
 <h2>Final Step To Place Your Order</h2>
+@if (session()->has('error'))
+            <div class="alert alert-danger">
+                {{ session()->get('error') }}
+            </div>
+        @endif
 <div class="row">
         <div class="col-8">
             <div class="box_main">
@@ -8,8 +13,11 @@
             <p>City- {{$shipping_address->city_name}}</p>
             <p>Post code- {{$shipping_address->postal_code}}</p>
             <p>Phone Number- {{$shipping_address->phone_number}}</p>
+            <h3>Your Wallet Balance</h3>
+            <p>Wallet Balance: MYR{{ $walletBalance }}</p> <!-- Wallet balance displayed here -->
             </div>
         </div>
+        
         <div class="col-4">
             <div class="box_main">
                 <h3>Your Final Products Are:</h3>
