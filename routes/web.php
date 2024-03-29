@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
@@ -58,6 +59,9 @@ Route::middleware(['auth','role:user','verified','isVerified'])->group(function(
     Route::get('/todays-deal','TodaysDeal')->name('todaysdeal');
     Route::get('/custom-service','CustomerService')->name('customerservice');
     Route::get('/remove-cart-item/{id}','RemoveCartItem')->name('removeitem');
+    //wallet route
+    Route::get('/wallet', [WalletController::class, 'show'])->name('wallet');
+    Route::post('/wallet/topup', [WalletController::class, 'topup'])->name('topup');
     });
 });
 

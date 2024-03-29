@@ -6,6 +6,7 @@
             <div class="box_main">
                 <ul>
                     <li><a href="{{route('userprofile')}}">Dashboard</a></li>
+                    <li><a href="{{route('wallet')}}">Wallet</a></li>
                     <li><a href="{{route('pendingorders')}}">Pending Orders</a></li>
                     <li><a href="{{route('history')}}">History</a></li>
                     <li><form method="POST" action="{{ route('logout') }}">
